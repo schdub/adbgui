@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>img/Document-Blank-icon.png</file>
+        <file>img/Places-folder-blue-icon.png</file>
+    </qresource>
+</RCC>
