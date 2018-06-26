@@ -12,7 +12,7 @@ private:
     static QString sAdbPath;
 };
 
-#if Q_OS_WIN
+#ifdef Q_OS_WIN
 #define ADB_EXT  ".exe"
 #define ADB_PATH(s) s.replace('/', '\\')
 #else
