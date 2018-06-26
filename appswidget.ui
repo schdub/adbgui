@@ -19,7 +19,7 @@
      <item>
       <widget class="QGroupBox" name="groupBox_3">
        <property name="title">
-        <string>Память</string>
+        <string>File system</string>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_4">
         <item>
@@ -55,14 +55,14 @@
           <item>
            <widget class="QPushButton" name="btSave">
             <property name="text">
-             <string>Сохранить</string>
+             <string>Save</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QPushButton" name="btSdCardRefresh">
             <property name="text">
-             <string>Обновить</string>
+             <string>Refresh</string>
             </property>
            </widget>
           </item>
@@ -74,7 +74,7 @@
      <item>
       <widget class="QGroupBox" name="groupBox_2">
        <property name="title">
-        <string>Установленные</string>
+        <string>Installed</string>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
@@ -98,7 +98,7 @@
           <item>
            <widget class="QPushButton" name="btAppsRefresh">
             <property name="text">
-             <string>Обновить</string>
+             <string>Refresh</string>
             </property>
            </widget>
           </item>
@@ -107,13 +107,13 @@
         <item>
          <widget class="QGroupBox" name="groupBox">
           <property name="title">
-           <string>Установка</string>
+           <string>Installation</string>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
            <item>
             <widget class="QLabel" name="label_2">
              <property name="text">
-              <string>Путь к файлу .apk для установки:</string>
+              <string>Path to .apk file:</string>
              </property>
             </widget>
            </item>
@@ -140,7 +140,7 @@
              <item>
               <widget class="QCheckBox" name="checkReinstall">
                <property name="text">
-                <string>Переустановить</string>
+                <string>Reinstall</string>
                </property>
               </widget>
              </item>
@@ -160,7 +160,7 @@
              <item>
               <widget class="QPushButton" name="btApkInstall">
                <property name="text">
-                <string>Установить</string>
+                <string>Install</string>
                </property>
               </widget>
              </item>

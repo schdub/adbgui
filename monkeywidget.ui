@@ -17,7 +17,7 @@
    <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>Monkey тест</string>
+      <string>Monkey test</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
@@ -25,7 +25,7 @@
         <item>
          <widget class="QLabel" name="label_3">
           <property name="text">
-           <string>Интервалы между нажатиями (мс)</string>
+           <string>Interval between taps (msec)</string>
           </property>
          </widget>
         </item>
@@ -71,7 +71,7 @@
         <item>
          <widget class="QLabel" name="label_4">
           <property name="text">
-           <string>Количество нажатий</string>
+           <string>Taps count</string>
           </property>
          </widget>
         </item>
@@ -115,14 +115,14 @@
       <item>
        <widget class="QCheckBox" name="checkSysKeys">
         <property name="text">
-         <string>Игнорировать системные клавиши</string>
+         <string>Ignore system keys</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QCheckBox" name="checkPackage">
         <property name="text">
-         <string>Для конкретного процесса</string>
+         <string>For process</string>
         </property>
        </widget>
       </item>
@@ -147,7 +147,7 @@
         <item>
          <widget class="QPushButton" name="btStart">
           <property name="text">
-           <string>Старт</string>
+           <string>Start</string>
           </property>
          </widget>
         </item>

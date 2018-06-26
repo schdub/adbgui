@@ -9,9 +9,9 @@ MainWidget::MainWidget(QWidget *parent)
 : QWidget(parent)
 , ui(new Ui::MainWidget) {
     ui->setupUi(this);
-    ui->tabWidget->addTab(new AppsWidget(),   tr("Программы"));
-    ui->tabWidget->addTab(new LogsWidget(),   tr("Логи"));
-    ui->tabWidget->addTab(new MonkeyWidget(), tr("Дополнительно"));
+    ui->tabWidget->addTab(new AppsWidget(),   tr("Apps"));
+    ui->tabWidget->addTab(new LogsWidget(),   tr("Logs"));
+    ui->tabWidget->addTab(new MonkeyWidget(), tr("Advanced"));
     on_btRefresh_clicked();
 }
 
