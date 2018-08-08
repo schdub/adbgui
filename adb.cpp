@@ -28,6 +28,20 @@ adb::adb() {
 				}
 			}
 //		}
+        // try to find path to android SDK installation in environment variables
+        // https://developer.android.com/studio/command-line/variables
+        if (sAdbPath.isEmpty()) {
+            const char * vars[] = {
+                "ANDROID_SDK_ROOT",
+                "ANDROID_HOME",
+                "ANDROID_ROOT"
+            };
+            char * envpath = NULL;
+            for (int i = 0, ie = sizeof(vars)/sizeof(*vars); i < ie && !(envpath = getenv(vars[i])); ++i);
+            if (envpath) {
+                sAdbPath = QString("%1/platform-tools/adb").arg(envpath);
+            }
+        }
         // lets suppose that path to adb in your PATH variable
         if (sAdbPath.isEmpty()) {
             sAdbPath.append("adb");
