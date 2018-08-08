@@ -19,7 +19,7 @@ MainWidget::~MainWidget() {
     delete ui;
 }
 
-// обновляем список текущих устройств
+// refresh devices list
 
 void MainWidget::on_btRefresh_clicked() {
     QString out(adb().run(QStringList() << "devices"));

@@ -14,10 +14,10 @@ MonkeyWidget::~MonkeyWidget() {
     delete ui;
 }
 
-// начало monkey теста
+// start monkey test
 
 void MonkeyWidget::on_btStart_clicked() {
-    // формируем команду для запуска
+    // prepare command
     QStringList argv;
     argv << "shell";
     argv << "monkey";
@@ -33,7 +33,7 @@ void MonkeyWidget::on_btStart_clicked() {
     argv[1].append(QString(" --throttle %1 %2")
                    .arg(ui->spinClickInterval->value())
                    .arg(ui->spinClickCount->value()));
-    // запускаем и получаем результаты
+    // ... run it and get its output
     ui->lineResults->clear();
     ui->lineResults->setPlainText(adb().run(argv, true));
 }

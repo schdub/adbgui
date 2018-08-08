@@ -16,15 +16,14 @@ TreeWidget::TreeWidget(QWidget *parent)
 TreeWidget::~TreeWidget() {
 }
 
-// поддерживаемые для drop типы mime
+// supported for drop mime types
 
 QStringList TreeWidget::mimeTypes() const {
     static QStringList ret = QStringList() << "text/uri-list";
     return ret;
 }
 
-// над деревом произошло событие drop, удовлетворяющее
-// нашему заявленному mimeTypes()
+// drop event above widget
 
 bool TreeWidget::dropMimeData(
     QTreeWidgetItem *parent,
@@ -35,43 +34,42 @@ bool TreeWidget::dropMimeData(
     Q_UNUSED(index);
     Q_UNUSED(action);
 
-    // формируем командную строку adb для добавления файла
+    // prepare command
 
     QStringList argv;
-    argv << "push";                                   // команда
-    argv << "";                                       // локальный путь
-    argv << parent->data(0, Qt::UserRole).toString(); // путь на устройстве
+    argv << "push";                                   // command
+    argv << "";                                       // local path
+    argv << parent->data(0, Qt::UserRole).toString(); // remote path
 
     bool ok = true;
     bool dontAppend = TreeWidget::isFake(parent);
 
     QTreeWidgetItem * twi;
     foreach (const QUrl &url, data->urls()) {
-        // получаем путь
+        // local path
         argv[1] = url.toLocalFile();
         qDebug() << "Dropped file:" << argv[1];
 
-        // если это не файл, то начинаем следующую итерацию
+        // working only with files
 
         QFileInfo fi(argv[1]);
         if (!fi.isFile()) continue;
 
-        // запускаем процесс копирования
+        // execute process
 
         ADB_PATH(argv[1]);
         QString out(adb().run(argv));
         if (out.isEmpty()) {
-            // что-то пошло не так
+            // something wrong
             ok = false;
             break;
         }
 
-        // если указатель на предка - временный элемент, то
-        // ничего добавлять и не нужно
+        // make sure that parent isn't 'fake' item
 
         if (dontAppend) continue;
 
-        // иначе добавляем элемент в дерево
+        // create sub-item for parent
 
         twi = createChild(fi.fileName(), fi.isFile() ? QString() : argv[2]);
         parent->addChild(twi);
@@ -79,20 +77,19 @@ bool TreeWidget::dropMimeData(
     return ok;
 }
 
-// создаем новый элемент дерева
+// create new item
 
 QTreeWidgetItem* TreeWidget::createChild(const QString & text, const QString & path, bool isRoot) {
     QTreeWidgetItem * item = new QTreeWidgetItem((QTreeWidget*)NULL);
     item->setText(0, text);
     if (path.isEmpty() && !isRoot) {
-        // это файл
+        // this is file
         item->setIcon(0, QIcon(":/img/Document-Blank-icon.png"));
     } else {
-        // это директория
+        // this is directory
         item->setIcon(0, QIcon(":/img/Places-folder-blue-icon.png"));
         item->setData(0, Qt::UserRole, QString("%1/%2/").arg(path).arg(text));
-        // добавляем элементу временный под-элемент
-        // чтобы можно было попытаться открыть его
+        // adding 'fake' sub-item
         QTreeWidgetItem * fake = new QTreeWidgetItem((QTreeWidget*)NULL);
         fake->setText(0, sFakeName);
         item->addChild(fake);
@@ -100,7 +97,7 @@ QTreeWidgetItem* TreeWidget::createChild(const QString & text, const QString & p
     return item;
 }
 
-// это временный элемент?
+// this is 'fake' item?
 
 bool TreeWidget::isFake(QTreeWidgetItem* item) {
     return (item->childCount() == 1 &&

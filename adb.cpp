@@ -10,10 +10,10 @@
 
 QString adb::sAdbPath;
 
-// конструктор
+// ctor
 
 adb::adb() {
-    // инициализируем статическую переменную с путем к процессу adb
+    // initialize static variable with path to adb executable
     if (sAdbPath.isEmpty()) {
 //		QString path = QString("%1/adb.exe").arg(QDir::currentPath());
 //        if (QFile::exists(path)) {
@@ -28,8 +28,7 @@ adb::adb() {
 				}
 			}
 //		}
-
-        // если путь к ADB не указан, то предполагаем, что он указан в PATH
+        // lets suppose that path to adb in your PATH variable
         if (sAdbPath.isEmpty()) {
             sAdbPath.append("adb");
         }
@@ -43,24 +42,24 @@ adb::adb() {
     }
 }
 
-// путь к файлу adb
+// adb path
 
 const QString& adb::path() const {
     return sAdbPath;
 }
 
-// запуск процесса
+// run adb process
 
 QString adb::run(const QStringList &argv, bool ignoreErrors) {
-    // создаем объект процесса
+    // create process
     QProcess proc;
     proc.setProcessChannelMode(QProcess::MergedChannels);
     proc.start(sAdbPath, argv);
 
-    // ждем пока стартует
+    // waiting while starting
 	bool ok = proc.waitForStarted();
     if (ok) {
-        // ожидаем завершения, "прокачивая" gui события
+        // waiting finished and don't forget to process gui events
 		int i = 0;
 		while (!proc.waitForFinished(500) && i<30) {
 			qApp->processEvents();
@@ -69,18 +68,16 @@ QString adb::run(const QStringList &argv, bool ignoreErrors) {
 		ok = (i < 30 && proc.exitCode() == 0);
 	}
 
-    // запускаем процесс
+    // reading process output
     QString out(proc.readAll());
     if (!ignoreErrors) {
-        // проверяем есть ли ошибки
+        // check for errors
         if (!ok || out.contains("error") || out.contains("Failure")) {
             if (out.isEmpty())
-                out = QObject::tr("Получение данных из процесса adb завершилось неудачей.");
-            // показываем сообщение об ошибке
-            QMessageBox::warning(NULL, QObject::tr("Ошибка"), out);
+                out = QObject::tr("Parsing data from adb process failed.");
+            QMessageBox::warning(NULL, QObject::tr("Error"), out);
             return QString();
         }
     }
-    // иначе возвращаем результат
     return out;
 }
