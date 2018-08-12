@@ -18,7 +18,7 @@ LogsWidget::LogsWidget(QWidget *parent)
     ui->tableWidget->horizontalHeader()->setStretchLastSection(true);
     ui->tableWidget->setColumnCount(2);
     ui->tableWidget->setHorizontalHeaderLabels(
-        QStringList() << tr("Метрика") << tr("Процесс")
+        QStringList() << tr("Metric") << tr("Process")
     );
     ui->radioMem->setChecked(true);
     ui->spinTopInterval->setValue(10);
@@ -30,22 +30,22 @@ LogsWidget::~LogsWidget() {
     delete ui;
 }
 
-// тик таймера получения метрик
+// tick of metrics getter timer
 
 void LogsWidget::timerTop() {
     bool failed = true;
 
-    // формируем команду
+    // prepare command
     QStringList argv;
     argv << "shell";
     argv << QString("top -n 1 -s %1")
                    .arg(ui->radioCPU->isChecked() ? "cpu" : "rss");
 
-    // выполняем ее
+    // execute it
     QString all(adb().run(argv));
     if (!all.isEmpty()){
         QStringList sl = all.split("\r\n");
-        // ищем заголовки
+        // find headers
         int i;
         bool found = false;
         for (i = 0; i < sl.size(); ++i) {
@@ -56,7 +56,7 @@ void LogsWidget::timerTop() {
             }
         }
         if (found) {
-            // фильтруем
+            // filter
             QVector<int> twis;
             QString fmt = ui->lineTopFilter->text();
             for (; i < sl.size(); ++i) {
@@ -70,9 +70,9 @@ void LogsWidget::timerTop() {
             ui->tableWidget->setRowCount(twis.size());
             i = ui->radioCPU->isChecked() ? 2 : 6;
             for (int row = 0; row < twis.size(); ++row) {
-                // разбираем строку
+                // split string by ' '
                 QStringList items(sl[twis[row]].split(" ", QString::SkipEmptyParts));
-                // создаем элементы
+                // create items
                 QTableWidgetItem * twi;
                 twi = new QTableWidgetItem(items[i]);
                 twi->setFlags(Qt::ItemIsEnabled);
@@ -92,7 +92,7 @@ void LogsWidget::timerTop() {
     }
 }
 
-// начало получения LogCat логов
+// LogCat logs getting start
 
 void LogsWidget::on_btLogStart_clicked() {
     QString fileName(ui->lineLogPath->text());
@@ -112,8 +112,8 @@ void LogsWidget::on_btLogStart_clicked() {
     if (!mLogFile->open(QIODevice::WriteOnly)) {
         delete mLogFile;
         mLogFile = 0;
-        QMessageBox::warning(this, tr("Ошибка"),
-            QString("Невозможно создать файл '%1'.").arg(fileName));
+        QMessageBox::warning(this, tr("Error"),
+            QString("Can't create file '%1'.").arg(fileName));
         return;
     }
 
@@ -126,12 +126,12 @@ void LogsWidget::on_btLogStart_clicked() {
         delete mLogFile;
         mLogFile = 0;
         QMessageBox::warning(this,
-            tr("Ошибка"),
+            tr("Error"),
             mProcLogcat.errorString());
     }
 }
 
-// остановить получаение LogCat логов
+// LogCat logs getting stop
 
 void LogsWidget::on_btLogStop_clicked() {
     mProcLogcat.close();
@@ -139,21 +139,21 @@ void LogsWidget::on_btLogStop_clicked() {
     ui->btLogStop->setEnabled(false);
 }
 
-// указать путь к файлу LogCat логов
+// file opena for LogCat logs
 
 void LogsWidget::on_btLogPathBrowse_clicked() {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Файл лога..."));
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save file..."));
     if (fileName.isEmpty()) return;
     ui->lineLogPath->setText(fileName);
 }
 
-// интервал опроса метрик
+// metrics request interval
 
 void LogsWidget::on_spinTopInterval_valueChanged(int value) {
     mTimerTop.setInterval(value * 1000);
 }
 
-// начало получения метрик
+// start of metrics getting
 
 void LogsWidget::on_btMetrStart_clicked() {
     ui->btMetrStart->setEnabled(false);
@@ -163,7 +163,7 @@ void LogsWidget::on_btMetrStart_clicked() {
     timerTop();
 }
 
-// остановка получения метрик
+// end of metrics getting
 
 void LogsWidget::on_btMetrStop_clicked() {
     mTimerTop.stop();
@@ -171,7 +171,7 @@ void LogsWidget::on_btMetrStop_clicked() {
     ui->btMetrStop->setEnabled(false);
 }
 
-// возможно читать из процесса logcat
+// ready to read from logcat process
 
 void LogsWidget::logReadReady() {
     if (mLogFile) {
