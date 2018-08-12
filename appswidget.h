@@ -7,8 +7,6 @@ namespace Ui {
 class AppsWidget;
 }
 
-class QTreeWidgetItem;
-
 class AppsWidget : public QWidget {
     Q_OBJECT
 public:
@@ -18,9 +16,6 @@ private slots:
     void on_btBrowseToInstall_clicked();
     void on_btApkInstall_clicked();
     void on_btAppsRefresh_clicked();
-    void on_btSdCardRefresh_clicked();
-    void on_treeWidget_itemExpanded(QTreeWidgetItem *item);
-    void on_btSave_clicked();
 
 private:
     Ui::AppsWidget *ui;

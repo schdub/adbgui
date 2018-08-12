@@ -3,12 +3,14 @@
 #include "appswidget.h"
 #include "logswidget.h"
 #include "monkeywidget.h"
+#include "fswidget.h"
 #include "adb.h"
 
 MainWidget::MainWidget(QWidget *parent)
 : QWidget(parent)
 , ui(new Ui::MainWidget) {
     ui->setupUi(this);
+    ui->tabWidget->addTab(new FSWidget(),     tr("Files"));
     ui->tabWidget->addTab(new AppsWidget(),   tr("Apps"));
     ui->tabWidget->addTab(new LogsWidget(),   tr("Logs"));
     ui->tabWidget->addTab(new MonkeyWidget(), tr("Advanced"));

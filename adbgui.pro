@@ -12,7 +12,8 @@ HEADERS = mainwindow.h \
     monkeywidget.h     \
     mainwidget.h       \
     treewidget.h       \
-    adb.h
+    adb.h              \
+    fswidget.h
 
 SOURCES = main.cpp     \
     mainwindow.cpp     \
@@ -21,11 +22,13 @@ SOURCES = main.cpp     \
     monkeywidget.cpp   \
     mainwidget.cpp     \
     treewidget.cpp     \
-    adb.cpp
+    adb.cpp            \
+    fswidget.cpp
 
 FORMS += appswidget.ui \
     logswidget.ui      \
     monkeywidget.ui    \
-    mainwidget.ui
+    mainwidget.ui      \
+    fswidget.ui
 
 RESOURCES += res.qrc
