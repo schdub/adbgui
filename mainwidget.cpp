@@ -6,6 +6,8 @@
 #include "fswidget.h"
 #include "adb.h"
 
+#include <QDebug>
+
 MainWidget::MainWidget(QWidget *parent)
 : QWidget(parent)
 , ui(new Ui::MainWidget) {
@@ -32,11 +34,21 @@ void MainWidget::on_btRefresh_clicked() {
         ui->cbDevices->clear();
         int current = -1;
         for (++i; i < sl.size(); ++i) {
-            ui->cbDevices->addItem(sl[i]);
+            const QString & s = sl[i];
+            QString deviceName(s.mid(0, s.lastIndexOf("\t")));
+            ui->cbDevices->addItem(deviceName);
             if (current == -1 && sl[i].endsWith("\tdevice")) {
                 current = ui->cbDevices->count()-1;
+                adb::setDevice(deviceName);
             }
         }
         ui->cbDevices->setCurrentIndex(current);
     }
+}
+
+// set default device
+
+void MainWidget::on_cbDevices_activated(const QString & deviceName) {
+    qDebug() << "new current device =" << deviceName;
+    adb::setDevice(deviceName);
 }

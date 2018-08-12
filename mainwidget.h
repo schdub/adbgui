@@ -14,6 +14,8 @@ public:
     ~MainWidget();
 private slots:
     void on_btRefresh_clicked();
+    void on_cbDevices_activated(const QString &deviceName);
+
 private:
     Ui::MainWidget *ui;
 };

@@ -9,6 +9,7 @@
 #include <QDir>
 
 QString adb::sAdbPath;
+QString adb::sDevice;
 
 // ctor
 
@@ -64,7 +65,13 @@ const QString& adb::path() const {
 
 // run adb process
 
-QString adb::run(const QStringList &argv, bool ignoreErrors) {
+QString adb::run(QStringList argv, bool ignoreErrors) {
+    // current device to work with
+    if (!sDevice.isEmpty()) {
+        argv.insert(0, "-s");
+        argv.insert(1, sDevice);
+    }
+
     // create process
     QProcess proc;
     proc.setProcessChannelMode(QProcess::MergedChannels);
@@ -99,4 +106,8 @@ QString adb::run(const QStringList &argv, bool ignoreErrors) {
         }
     }
     return out;
+}
+
+void adb::setDevice(const QString & deviceName) {
+    sDevice = deviceName;
 }
