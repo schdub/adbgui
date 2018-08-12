@@ -87,7 +87,7 @@ QTreeWidgetItem* TreeWidget::createChild(const QString & text, const QString & p
         item->setIcon(0, QIcon(":/img/Document-Blank-icon.png"));
     } else {
         // this is directory
-        const QString & data = ( text.isEmpty() ? path : QString("%1/%2/").arg(path).arg(text) );
+        const QString & data = ( text.isEmpty() ? path : QString("%1%2/").arg(path).arg(text) );
         item->setIcon(0, QIcon(":/img/Places-folder-blue-icon.png"));
         item->setData(0, Qt::UserRole, data);
         // adding 'fake' sub-item

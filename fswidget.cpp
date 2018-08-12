@@ -38,19 +38,42 @@ void FSWidget::on_treeWidget_itemExpanded(QTreeWidgetItem *item) {
     // prepare command for getting contents of given path
     QStringList argv;
     argv << "shell";
-    argv << QString("ls -la 2>/dev/null %1").arg(path);
+    argv << QString("ls -lA 2>/dev/null %1").arg(path);
 
     // execute ...
     QString out(adb().run(argv, true));
     if (out.isEmpty()) return;
 
     // parse output and adding items into TV
-    foreach (const QString & s, out.split("\r\n", QString::SkipEmptyParts)) {
-        if (s.size() <= 58) continue;
-        int i = 58;
-        while (i >= 0 && s[i] != ' ') --i;
-        if (i) ++i;
-        twi = TreeWidget::createChild(s.mid(i), s[0] == 'd' ? path : QString());
+    foreach (const QString & s, out.split("\n", QString::SkipEmptyParts)) {
+        // ignore error messages
+        if (s.startsWith("ls: ")) continue;
+
+        // split up every row
+        QVector<QStringRef> rowItems = s.splitRef(" ", QString::SkipEmptyParts);
+
+        // not enough peaces?
+        if (rowItems.size() < 8) continue;
+
+        // skip current and parent dirs
+        bool isDir = (rowItems[0].at(0) == 'd');
+        if (isDir && (rowItems[7] == "." || rowItems[7] == ".."))
+            continue;
+
+        // first and last indexes of name
+        int lastIndex = s.size();
+        int firstIndex = rowItems[7].position();
+
+        bool isLink = (rowItems[0].at(0) == 'l');
+#if (0)
+        // cut name of link
+        if (isLink)
+            lastIndex = s.lastIndexOf(" -> ");
+#endif
+        // create tree view item
+        QString itemName(s.mid(firstIndex, lastIndex - firstIndex));
+        twi = TreeWidget::createChild(itemName, isDir ? path : QString());
+        twi->setTextColor(0, isLink ? Qt::blue : Qt::black);
         item->addChild(twi);
     }
 }
