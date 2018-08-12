@@ -5,6 +5,8 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QDebug>
+#include <QRegExp>
+
 #include "adb.h"
 
 FSWidget::FSWidget(QWidget *parent) :
@@ -38,7 +40,7 @@ void FSWidget::on_treeWidget_itemExpanded(QTreeWidgetItem *item) {
     // prepare command for getting contents of given path
     QStringList argv;
     argv << "shell";
-    argv << QString("ls -lA 2>/dev/null %1").arg(path);
+    argv << QString("ls -la 2>/dev/null %1").arg(path);
 
     // execute ...
     QString out(adb().run(argv, true));
@@ -52,17 +54,26 @@ void FSWidget::on_treeWidget_itemExpanded(QTreeWidgetItem *item) {
         // split up every row
         QVector<QStringRef> rowItems = s.splitRef(" ", QString::SkipEmptyParts);
 
-        // not enough peaces?
-        if (rowItems.size() < 8) continue;
+        // try find time column
+        int nameStartColumn = 0;
+        QRegExp rxTime("^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$");
+        for (nameStartColumn = 0; nameStartColumn < rowItems.size(); ++nameStartColumn) {
+            if (rxTime.indexIn(rowItems[nameStartColumn].toString()) != -1) break;
+        }
+        // after name column will be name column
+        nameStartColumn += 1;
+
+        // not enough columns?
+        if (nameStartColumn >= rowItems.size()) continue;
 
         // skip current and parent dirs
         bool isDir = (rowItems[0].at(0) == 'd');
-        if (isDir && (rowItems[7] == "." || rowItems[7] == ".."))
+        if (isDir && (rowItems[nameStartColumn] == "." || rowItems[nameStartColumn] == ".."))
             continue;
 
         // first and last indexes of name
         int lastIndex = s.size();
-        int firstIndex = rowItems[7].position();
+        int firstIndex = rowItems[nameStartColumn].position();
 
         bool isLink = (rowItems[0].at(0) == 'l');
 #if (0)
@@ -70,8 +81,12 @@ void FSWidget::on_treeWidget_itemExpanded(QTreeWidgetItem *item) {
         if (isLink)
             lastIndex = s.lastIndexOf(" -> ");
 #endif
-        // create tree view item
+        // now get item name
         QString itemName(s.mid(firstIndex, lastIndex - firstIndex));
+        // get rid leading '\r'
+        if (itemName.endsWith('\r'))
+            itemName.remove(itemName.size()-1, 1);
+        // create tree view item
         twi = TreeWidget::createChild(itemName, isDir ? path : QString());
         twi->setTextColor(0, isLink ? Qt::blue : Qt::black);
         item->addChild(twi);
