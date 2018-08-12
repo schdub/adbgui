@@ -81,14 +81,15 @@ bool TreeWidget::dropMimeData(
 
 QTreeWidgetItem* TreeWidget::createChild(const QString & text, const QString & path, bool isRoot) {
     QTreeWidgetItem * item = new QTreeWidgetItem((QTreeWidget*)NULL);
-    item->setText(0, text);
+    item->setText(0, text.isEmpty() ? path : text);
     if (path.isEmpty() && !isRoot) {
         // this is file
         item->setIcon(0, QIcon(":/img/Document-Blank-icon.png"));
     } else {
         // this is directory
+        const QString & data = ( text.isEmpty() ? path : QString("%1/%2/").arg(path).arg(text) );
         item->setIcon(0, QIcon(":/img/Places-folder-blue-icon.png"));
-        item->setData(0, Qt::UserRole, QString("%1/%2/").arg(path).arg(text));
+        item->setData(0, Qt::UserRole, data);
         // adding 'fake' sub-item
         QTreeWidgetItem * fake = new QTreeWidgetItem((QTreeWidget*)NULL);
         fake->setText(0, sFakeName);

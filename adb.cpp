@@ -80,11 +80,16 @@ QString adb::run(const QStringList &argv, bool ignoreErrors) {
 			++i;
 		}
 		ok = (i < 30 && proc.exitCode() == 0);
+        if (proc.exitCode() != 0) {
+            qDebug() << "exitCode =" << proc.exitCode();
+        }
 	}
 
     // reading process output
     QString out(proc.readAll());
-    if (!ignoreErrors) {
+    if (ignoreErrors) {
+        ok = out.size() > 0;
+    } else {
         // check for errors
         if (!ok || out.contains("error") || out.contains("Failure")) {
             if (out.isEmpty())
