@@ -8,19 +8,23 @@ QT      += widgets
 
 HEADERS = mainwindow.h \
     appswidget.h       \
+    imagewidget.h \
     logswidget.h       \
     monkeywidget.h     \
     mainwidget.h       \
+    screenwidget.h \
     treewidget.h       \
     adb.h              \
     fswidget.h
 
 SOURCES = main.cpp     \
+    imagewidget.cpp \
     mainwindow.cpp     \
     appswidget.cpp     \
     logswidget.cpp     \
     monkeywidget.cpp   \
     mainwidget.cpp     \
+    screenwidget.cpp \
     treewidget.cpp     \
     adb.cpp            \
     fswidget.cpp
@@ -29,6 +33,7 @@ FORMS += appswidget.ui \
     logswidget.ui      \
     monkeywidget.ui    \
     mainwidget.ui      \
-    fswidget.ui
+    fswidget.ui \
+    screenwidget.ui
 
 RESOURCES += res.qrc

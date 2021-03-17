@@ -6,7 +6,8 @@
 class adb {
 public:
     adb();
-    QString run(QStringList argv = QStringList(), bool ignoreErrors = false);
+//    QString run(QStringList argv = QStringList(), bool ignoreErrors = false);
+    QByteArray run(QStringList argv = QStringList(), bool ignoreErrors = false);
     const QString& path() const;
 
     static void setDevice(const QString & deviceName);

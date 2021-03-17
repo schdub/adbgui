@@ -65,7 +65,7 @@ const QString& adb::path() const {
 
 // run adb process
 
-QString adb::run(QStringList argv, bool ignoreErrors) {
+QByteArray adb::run(QStringList argv, bool ignoreErrors) {
     // current device to work with
     if (!sDevice.isEmpty()) {
         argv.insert(0, "-s");
@@ -93,16 +93,16 @@ QString adb::run(QStringList argv, bool ignoreErrors) {
 	}
 
     // reading process output
-    QString out(proc.readAll());
+    QByteArray out(proc.readAll());
     if (ignoreErrors) {
         ok = out.size() > 0;
     } else {
         // check for errors
         if (!ok || out.contains("error") || out.contains("Failure")) {
             if (out.isEmpty())
-                out = QObject::tr("Parsing data from adb process failed.");
+                out = QObject::tr("Parsing data from adb process failed.").toLatin1();
             QMessageBox::warning(NULL, QObject::tr("Error"), out);
-            return QString();
+            return QByteArray();
         }
     }
     return out;
