@@ -9,6 +9,8 @@ class ImageWidget : public QWidget {
 
     QPixmap *mPixmap;
     double mZoom;
+    qint64 mPressTime;
+    QPoint mPressPos;
 
 public:
     explicit ImageWidget(QWidget *parent = nullptr);
@@ -23,6 +25,7 @@ protected:
     void paintEvent(QPaintEvent *ev);
     void wheelEvent(QWheelEvent * e);
     void mousePressEvent(QMouseEvent * e);
+    void mouseReleaseEvent(QMouseEvent * e);
 
 signals:
 

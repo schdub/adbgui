@@ -4,6 +4,7 @@
 #include <QWheelEvent>
 #include <QDebug>
 #include <QMouseEvent>
+#include <QDateTime>
 
 #include "adb.h"
 
@@ -69,28 +70,62 @@ void ImageWidget::wheelEvent (QWheelEvent * e) {
    qDebug() << "ZOOM" << e->delta() << mZoom;
 }
 
-void ImageWidget::mousePressEvent(QMouseEvent *e) {
+void ImageWidget::mousePressEvent(QMouseEvent * e) {
+    mPressPos = e->pos();
+    mPressTime = QDateTime::currentMSecsSinceEpoch();
+}
 
+void ImageWidget::mouseReleaseEvent(QMouseEvent * e) {
+    // zoom isn't
     if (mZoom < 0) {
+        qDebug() << "zoom factor is invalid.";
         return;
     }
 
-    int x = e->x();
-    int y = e->y();
-    int newX = x / mZoom;
-    int newY = y / mZoom;
-    qDebug() << __FUNCTION__ << x << y << " -> " << newX << newY;
+    // original size of our phone screen
+    const QSize & origSize = pixmap()->size();
 
-    if (newX > 0 && newX < pixmap()->size().width()) {
-        if (newY >0 && newY < pixmap()->size().height()) {
-            //    "shell input tap "100 100
-            QStringList argv;
-            argv << "shell";
-            argv << "input";
-            argv << "tap";
-            argv << QString::number( newX );
-            argv << QString::number( newY );
-            QByteArray out(adb().run(argv));
+    // press and release mouse positions isn't same
+    if (mPressPos == e->pos()) {
+        // then we're about to send tap event
+
+        // lets translate our 2D coordinates to phone coordinates
+        // using zoom factor
+        int newX = e->x() / mZoom;
+        int newY = e->y() / mZoom;
+
+        // coordinates can't be larger than original phone screen
+        if (newX > 0 && newX < origSize.width() && newY > 0 && newY < origSize.height()) {
+            // perform tap at given translated position
+            adb::tap(newX, newY);
+        } else {
+            qDebug() << "tapping failed for" << e->x() << e->y() << " -> " << newX << newY;
+        }
+    } else {
+        //  ... or swipe
+
+        // calculate time between press and release mouse events
+        qint64 msec = QDateTime::currentMSecsSinceEpoch() - mPressTime;
+        // prepare start and end press 2D coodinates by translating it to android coodrinates
+        int startX = mPressPos.x() / mZoom;
+        int startY = mPressPos.y() / mZoom;
+        int endX = e->x() / mZoom;
+        int endY = e->y() / mZoom;
+        bool ok = false;
+        // checking translated coordinates not large original android coordinates
+        if (startX > 0 && startX < origSize.width() && startY > 0 && startY < origSize.height()) {
+            if (endX > 0 && endX < origSize.width() && endY > 0 && endY < origSize.height()) {
+                // and finally perform swipe
+                adb::swipe( startX, startY, endX, endY, msec );
+                ok = true;
+            }
+        }
+
+        if (!ok) {
+            qDebug() << "swapping failed for"
+                     << mPressPos << "->" << "(" << startX << startY << ")"
+                     << e->pos() << "->" << "("  << endX << endY << ")"
+                     << msec;
         }
     }
 }

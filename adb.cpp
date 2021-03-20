@@ -111,3 +111,28 @@ QByteArray adb::run(QStringList argv, bool ignoreErrors) {
 void adb::setDevice(const QString & deviceName) {
     sDevice = deviceName;
 }
+
+QByteArray adb::tap(int x, int y) {
+    QStringList argv;
+    argv << "shell";
+    argv << "input";
+    argv << "tap";
+    argv << QString::number( x );
+    argv << QString::number( y );
+    QByteArray out(adb().run(argv));
+    return out;
+}
+
+QByteArray adb::swipe(int startX, int startY, int endX, int endY, qint64 msec) {
+    QStringList argv;
+    argv << "shell";
+    argv << "input";
+    argv << "swipe";
+    argv << QString::number( startX );
+    argv << QString::number( startY );
+    argv << QString::number( endX );
+    argv << QString::number( endY );
+    argv << QString::number( msec );
+    QByteArray out(adb().run(argv));
+    return out;
+}

@@ -10,6 +10,8 @@ public:
     QByteArray run(QStringList argv = QStringList(), bool ignoreErrors = false);
     const QString& path() const;
 
+    static QByteArray tap(int x, int y);
+    static QByteArray swipe(int startX, int startY, int endX, int endY, qint64 msec);
     static void setDevice(const QString & deviceName);
 
 private:
