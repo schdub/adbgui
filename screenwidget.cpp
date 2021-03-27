@@ -34,7 +34,6 @@ void ScreenWidget::hideEvent(QHideEvent *) {
 
 void ScreenWidget::showEvent(QShowEvent *) {
     qDebug() << __FUNCTION__;
-    screenShot();
     mTimer->start(100);
 }
 
@@ -51,8 +50,11 @@ void ScreenWidget::screenShot() {
     argv << "-p";
     QByteArray out(adb().run(argv));
 
-    qDebug() << out.size();
-//    qDebug() << out.toLatin1().toHex();
+    if (out.size() == 0) {
+        // error of parsing output from ADB
+        mTimer->stop();
+        return;
+    }
 
     QPixmap * p = new QPixmap;
     if (p->loadFromData(out, "PNG")) {
