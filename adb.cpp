@@ -16,19 +16,15 @@ QString adb::sDevice;
 adb::adb() {
     // initialize static variable with path to adb executable
     if (sAdbPath.isEmpty()) {
-//		QString path = QString("%1/adb.exe").arg(QDir::currentPath());
-//        if (QFile::exists(path)) {
-//            sAdbPath = path;
-//        } else {
-			QSettings s("adbgui.ini", QSettings::IniFormat);
-			QString path = s.value("adbPath").toString();
-            if (!path.isEmpty()) {
-                sAdbPath = QString("%1/adb%2").arg(path).arg(ADB_EXT);
-				if (!QFile::exists(sAdbPath)) {
-					sAdbPath.clear();
-				}
-			}
-//		}
+        // maybe user specified in INI configuration
+        QSettings s("adbgui.ini", QSettings::IniFormat);
+        QString path = s.value("adbPath").toString();
+        if (!path.isEmpty()) {
+            sAdbPath = QString("%1/adb%2").arg(path).arg(ADB_EXT);
+            if (!QFile::exists(sAdbPath)) {
+                sAdbPath.clear();
+            }
+        }
         // try to find path to android SDK installation in environment variables
         // https://developer.android.com/studio/command-line/variables
         if (sAdbPath.isEmpty()) {
@@ -40,20 +36,13 @@ adb::adb() {
             char * envpath = NULL;
             for (int i = 0, ie = sizeof(vars)/sizeof(*vars); i < ie && !(envpath = getenv(vars[i])); ++i);
             if (envpath) {
-                sAdbPath = QString("%1/platform-tools/adb").arg(envpath);
+                sAdbPath = QString("%1/platform-tools/adb%2").arg(envpath).arg(ADB_EXT);
             }
         }
-        // lets suppose that path to adb in your PATH variable
-        if (sAdbPath.isEmpty()) {
-            sAdbPath.append("adb");
-        }
-
-//        if (sAdbPath.isEmpty()) {
-//            QMessageBox::warning(NULL, QObject::tr("Ошибка"),
-//                QObject::tr("Не известен путь к adb.\n"
-//                            "Укажите где он находится в ключе adbPath файла adbgui.ini,\n"
-//                            "например, adbPath=c:/android/sdk/platform-tools"));
-//        }
+    }
+    // lets suppose that path to adb in your PATH variable
+    if (sAdbPath.isEmpty()) {
+        sAdbPath.append(QString("adb%1").arg(ADB_EXT));
     }
 }
 
