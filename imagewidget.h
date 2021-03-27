@@ -16,7 +16,7 @@ public:
     explicit ImageWidget(QWidget *parent = nullptr);
     ~ImageWidget();
 
-    void setPixmap(QPixmap * p);
+    void setPixmap(const QByteArray & picBinary);
     QPixmap* pixmap();
 
     QSize sizeHint() const;

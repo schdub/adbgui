@@ -53,12 +53,7 @@ void ScreenWidget::screenShot() {
     if (out.size() == 0) {
         // error of parsing output from ADB
         mTimer->stop();
-        return;
-    }
-
-    QPixmap * p = new QPixmap;
-    if (p->loadFromData(out, "PNG")) {
-        qDebug() << p->size();
-        ui->widget->setPixmap( p );
+    } else {
+        ui->widget->setPixmap( out );
     }
 }

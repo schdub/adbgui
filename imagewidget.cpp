@@ -26,19 +26,26 @@ QSize ImageWidget::sizeHint() const {
     }
 }
 
-void ImageWidget::setPixmap(QPixmap * p) {
-    if (mPixmap) {
-        delete mPixmap;
+void ImageWidget::setPixmap(const QByteArray & picBinary) {
+    bool firstLoad = false;
+    if (mPixmap == nullptr) {
+        firstLoad = true;
+        mPixmap = new QPixmap;
+    }
+
+    if (!mPixmap->loadFromData(picBinary, "PNG")) {
+        qWarning() << "loadFromData failed. Possible corrupted data.";
     } else {
-        // adjust zoom only for 1st time
-        if (p->size().width() > width()) {
-            mZoom = width();
-            mZoom /= p->size().width();
-            qDebug() << mZoom << p->size().width() << width();
+        if (firstLoad) {
+            // adjust zoom only for 1st time
+            if (mPixmap->size().width() > width()) {
+                mZoom = width();
+                mZoom /= mPixmap->size().width();
+                qDebug() << mZoom << mPixmap->size().width() << width();
+            }
         }
     }
 
-    mPixmap = p;
     update();
 }
 
