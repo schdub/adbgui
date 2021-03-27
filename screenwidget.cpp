@@ -12,7 +12,6 @@
 ScreenWidget::ScreenWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ScreenWidget),
-    mImageWidget(nullptr),
     mTimer(nullptr)
 {
     ui->setupUi(this);
@@ -20,11 +19,6 @@ ScreenWidget::ScreenWidget(QWidget *parent) :
     mTimer = new QTimer(this);
     mTimer->setInterval(500);
     connect(mTimer, SIGNAL(timeout()), this, SLOT(onTimer()));
-
-    mImageWidget = new ImageWidget(ui->scrollArea);
-    ui->scrollArea->setBackgroundRole(QPalette::Dark);
-    ui->scrollArea->setWidget(mImageWidget);
-    ui->scrollArea->setWidgetResizable(true);
 }
 
 ScreenWidget::~ScreenWidget() {
@@ -63,6 +57,6 @@ void ScreenWidget::screenShot() {
     QPixmap * p = new QPixmap;
     if (p->loadFromData(out, "PNG")) {
         qDebug() << p->size();
-        mImageWidget->setPixmap( p );
+        ui->widget->setPixmap( p );
     }
 }

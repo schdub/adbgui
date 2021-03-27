@@ -14,8 +14,6 @@ class ScreenWidget;
 class ScreenWidget : public QWidget {
     Q_OBJECT
 
-    ImageWidget * mImageWidget;
-
 public:
     explicit ScreenWidget(QWidget *parent = nullptr);
     ~ScreenWidget();
